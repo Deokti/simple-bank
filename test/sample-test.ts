@@ -6,18 +6,15 @@ import { Contract } from "ethers";
 use(chaiAsPromised);
 use(chaiArray);
 
-describe("SampleContract", function () {
+describe("SimpleBank", function () {
   let accountAddress: string;
   let contract: Contract;
 
   beforeEach(async function () {
     const [acc1] = await ethers.getSigners();
 
-    // For deploying getContractFactory,
-    // the first account is automatically used,
-    // the address of which is recorded in accountAddreess
-    const SampleContract = await ethers.getContractFactory("SampleContract");
-    const deploy = await SampleContract.deploy();
+    const SimpleBank = await ethers.getContractFactory("SimpleBank");
+    const deploy = await SimpleBank.deploy();
     await deploy.deployed();
 
     accountAddress = acc1.address;
