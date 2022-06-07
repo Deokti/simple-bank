@@ -10,7 +10,7 @@
   "scripts": {
     "help": "hardhat --help",
     "node": "hardhat node",
-    "test": "hardhat test coverage",
+    "test": "hardhat test",
     "build": "hardhat compile",
     "size": "hardhat size-contracts",
     "check-updates": "npx npm-check-updates",
