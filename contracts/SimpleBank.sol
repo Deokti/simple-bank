@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: Unlicense
-pragma solidity ^0.8.13;
+pragma solidity ^0.8.0;
 
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
@@ -14,29 +14,56 @@ contract SimpleBank {
     // **************************
     // Events
     // **************************
+
     event Approv(address indexed _address);
     event Deposit(address indexed _address, uint256 _amount);
-    event Withdraw(address indexed _address, int256 _amount);
+    event Withdraw(address indexed _address, uint256 _amount);
 
     // **************************
     // View functions
     // **************************
-    function balanceOf(address _address) external view returns (uint256) {
+
+    function balanceOf(address _address) public view returns (uint256) {
         return _balances[_address];
     }
 
-    function approved(address _address) external view returns (bool) {
+    function approved(address _address) public view returns (bool) {
         return _approved[_address];
     }
 
-    function lastWithdraw(address _address) external view returns (uint256) {
+    function lastWithdraw(address _address) public view returns (uint256) {
         return _lastWithdraw[_address];
+    }
+
+    function totalSupply() public view returns (uint256) {
+        return address(this).balance;
     }
 
     // **************************
     // State modifying functions
     // **************************
-    function approve(address _address) external returns (bool) {
+
+    function approve(address _address) public returns (bool) {
+        return _approve(_address);
+    }
+
+    function deposit(uint256 _amount) external payable {
+        _deposit(msg.sender, _amount);
+    }
+
+    function withdraw(uint256 _amount) public {
+        _withdraw(msg.sender, _amount);
+    }
+
+    receive() external payable {
+        _deposit(msg.sender, msg.value);
+    }
+
+    // **************************
+    // Internal functions
+    // **************************
+
+    function _approve(address _address) internal returns (bool) {
         require(_approved[_address] == false, "The address been approved");
 
         _approved[_address] = true;
@@ -44,30 +71,22 @@ contract SimpleBank {
         return true;
     }
 
-    function deposit(address _address, uint256 _amount) external payable {
+    function _deposit(address _address, uint256 _amount) internal {
         require(_approved[_address] == true, "This address has not confirmed");
-
-        _balances[_address] += _balances[_address].add(_amount);
+        _balances[_address] = _balances[_address].add(_amount);
         emit Deposit(_address, _amount);
     }
 
-    function withdraw(uint256 _amount) external {
-        require(
-            _approved[msg.sender] == true,
-            "This address has not confirmed"
-        );
+    function _withdraw(address _address, uint256 _amount) internal {
+        // Address approved
+        require(_approved[_address] == true, "This address has not confirmed");
 
-        console.log(_balances[msg.sender], _amount);
-        // !! Avoid to make time-based decisions in your business logic !!
-        require(block.timestamp >= _lastWithdraw[msg.sender] + 1 weeks, "");
+        // Checking the balance
+        require(_balances[_address] >= _amount, "There are not enough ethers!");
 
-        // 2. checking the balance
-        require(
-            _balances[msg.sender] >= _amount,
-            "Attempt to withdraw more than the account!"
-        );
+        _balances[_address] = _balances[_address].sub(_amount);
 
-        _balances[msg.sender] = _balances[msg.sender].sub(_amount);
-        _lastWithdraw[msg.sender] = block.timestamp;
+        payable(_address).transfer(_amount);
+        emit Withdraw(_address, _amount);
     }
 }
