@@ -25,11 +25,6 @@ contract SimpleBankModifyFacet {
         LibStateModify.withdraw(_address, _amount);
     }
 
-    receive() external payable {
-        console.log("receive");
-        LibStateModify.deposit(msg.sender, msg.value);
-    }
-
     function supportsInterface(bytes4 _interfaceID)
         external
         view

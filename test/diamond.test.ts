@@ -170,33 +170,33 @@ describe("Diamond Simple Bank", function () {
     expect(deposit).to.be.eq(_1Ether);
   });
 
-  it("Should deposit and withdraw ether from your account", async () => {
-    const [_, acc2] = await ethers.getSigners();
-    await BankModify.approve(acc2.address);
-    let accountBalance: number;
-    let balanceOf: BigNumber;
+  // it("Should deposit and withdraw ether from your account", async () => {
+  //   const [_, acc2] = await ethers.getSigners();
+  //   await BankModify.approve(acc2.address);
+  //   let accountBalance: number;
+  //   let balanceOf: BigNumber;
 
-    // Send transaction on Contract. Inside call receive() external payable
-    // Account balances 9999 - 3 ether => 9996 ether
-    await sendTransaction(acc2, BankModify.address, _3Ether.toHexString());
+  //   // Send transaction on Contract. Inside call receive() external payable
+  //   // Account balances 9999 - 3 ether => 9996 ether
+  //   await sendTransaction(acc2, BankModify.address, _3Ether.toHexString());
 
-    balanceOf = await BankView.balanceOf(acc2.address);
-    accountBalance = await getAccountBalance(acc2);
-    console.log({ balanceOf });
+  //   balanceOf = await BankView.balanceOf(acc2.address);
+  //   accountBalance = await getAccountBalance(acc2);
+  //   console.log({ balanceOf });
 
-    // Check the account balance at the address and the account balance
-    // expect(balanceOf).to.be.eq(_3Ether);
-    // expect(accountBalance).to.be.eq(9996);
+  //   // Check the account balance at the address and the account balance
+  //   // expect(balanceOf).to.be.eq(_3Ether);
+  //   // expect(accountBalance).to.be.eq(9996);
 
-    // await BankModify.withdraw(acc2.address, _1Ether);
+  //   // await BankModify.withdraw(acc2.address, _1Ether);
 
-    // balanceOf = await BankView.balanceOf(acc2.address);
-    // accountBalance = await getAccountBalance(acc2);
+  //   // balanceOf = await BankView.balanceOf(acc2.address);
+  //   // accountBalance = await getAccountBalance(acc2);
 
-    // Check the account balance at the address and the account balance
-    // expect(balanceOf).to.be.eq(_2Ether);
-    // expect(accountBalance).to.be.eq(9997);
-  });
+  //   // Check the account balance at the address and the account balance
+  //   // expect(balanceOf).to.be.eq(_2Ether);
+  //   // expect(accountBalance).to.be.eq(9997);
+  // });
 });
 
 // Convert currency unit from ether to wei
